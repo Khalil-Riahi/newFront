@@ -720,6 +720,7 @@ export default function SubscriptionModal({ isOpen1, onClose, sub }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [price, setPrice] = useState(0);
   const [numPersons, setNumPersons] = useState(1);
+  const [desolage , setDesolage] = useState(null)
 
   const router = useRouter();
 
@@ -747,10 +748,23 @@ export default function SubscriptionModal({ isOpen1, onClose, sub }) {
         headers: { "Content-Type": "application/json" },
       });
       if (!response.ok) {
-        throw new Error("Error in paying");
+        throw new Error("Error in paying: " + response.statusText);
       }
+
       const resData = await response.json();
-      window.location.href = resData.result.payUrl;
+      console.log(response.status)
+
+      console.log('url: '+resData?.result?.payUrl)
+
+      if(response.status === 210){
+        console.log(resData.message)
+        setDesolage(resData.message)
+        
+      }else if(response.status === 200){
+        console.log('hi i am here')
+        window.location.href = resData.result.payUrl;
+      }
+      console.log(resData)
     } catch (err) {
       console.error(err);
     }
@@ -863,6 +877,7 @@ export default function SubscriptionModal({ isOpen1, onClose, sub }) {
                 <p className="text-sm">Prix par mois d'abonnement</p>
                 <p className="text-xl font-bold">{price} DT/Mois</p>
 
+
                 <button
                   className="mt-4 w-full py-2 px-4 bg-blue-700 hover:bg-blue-800 text-white rounded-md transition duration-300"
                   onClick={() => {
@@ -876,6 +891,12 @@ export default function SubscriptionModal({ isOpen1, onClose, sub }) {
                 >
                   Pay
                 </button>
+
+                {/* <p className=''>{desolage}</p> */}
+                <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                    <span class="font-medium">{desolage}</span> 
+                </div>
+
               </div>
             </div>
           </div>

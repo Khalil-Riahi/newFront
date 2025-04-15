@@ -247,6 +247,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// import { title } from 'process';
 
 export default function Points() {
   const router = useRouter();
@@ -258,6 +259,34 @@ export default function Points() {
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState('');
   const [numtable, setNumtable] = useState('');
+
+  async function sendNotification(){
+    if (!userId || points <= 0) {
+      toast.warn('Please enter a valid number of points');
+      return;
+    }
+
+    const obj ={
+      title: "Adding Points",
+      content: `I want to buy ${points} points`,
+      // sender_id: userId
+    }
+
+    const response = await fetch(`http://localhost:8000/ELACO/notification/${userId}` , {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(obj)
+    })
+
+    if(!response.ok){
+      throw Error(`Error in cash paying ${response.statusText}`)
+    }
+
+    const resDate = await response.json()
+    console.log(resDate)
+  }
 
   useEffect(() => {
     const status = searchParams.get('status');
@@ -370,6 +399,13 @@ export default function Points() {
               className="w-full bg-yellow-400 py-3 rounded-md text-white font-semibold hover:bg-green-700 transition disabled:bg-gray-400"
             >
               {isLoading ? 'Processing...' : 'Pay Now'}
+            </button>
+            <button
+              onClick={sendNotification}
+              disabled={isLoading}
+              className="w-full bg-gray-800 py-3 rounded-md text-white font-semibold hover:bg-green-700 transition disabled:bg-gray-400"
+            >
+              Pay Cash
             </button>
           </form>
         </div>

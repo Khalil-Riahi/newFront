@@ -18,6 +18,8 @@ import {
   TableIcon,
   UserCircleIcon,
 } from "../icons/index";
+import path from "path";
+import { Users, Users2 } from "lucide-react";
 // import SidebarWidget from "./SidebarWidget";
 
 const navItems = [
@@ -44,6 +46,9 @@ const navItems = [
 
     ],
   },
+  {
+    "name": "Users" , path:"/dashboard1/users" , pro: false, icon: <Users2 />
+  }
 ];
 
 const othersItems = [
